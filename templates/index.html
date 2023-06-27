@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pendulum Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"
+            integrity="sha512-3RlxD1bW34eFKPwj9gUXEWtdSMC59QqIqHnD8O/NoTwSJhgxRizdcFVQhUMFyTp5RwLTDL0Lbcqtl8b7bFAzog=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8">
+    let pendulum;
+
+    function setup() {
+        createCanvas(400, 400);
+        pendulum = new Pendulum(width / 2, 0, 200);
+    }
+
+    function draw() {
+        background(220);
+        pendulum.update();
+        pendulum.display();
+    }
+
+    class Pendulum {
+        constructor(originX, originY, armLength) {
+            this.origin = createVector(originX, originY);
+            this.armLength = armLength;
+            this.angle = 0; // initial angle
+            this.angleVelocity = 0.0;
+            this.damping = 0.995; // Arbitrary damping
+            this.ballRadius = 48.0; // Arbitrary ball radius
+            this.gravity = 0.4; // Arbitrary gravity
+        }
+
+        update() {
+        }
+
+        display() {
+            let x = this.armLength * sin(this.angle);
+            let y = this.armLength * cos(this.angle);
+
+            stroke(0);
+            strokeWeight(2);
+            fill(127);
+            line(this.origin.x, this.origin.y, this.origin.x + x, this.origin.y + y);
+            ellipse(this.origin.x + x, this.origin.y + y, this.ballRadius, this.ballRadius);
+        }
+    }
+
+    setInterval(function () {
+        httpGet('/get_angle', 'json', false, function (response) {
+            console.log(response);
+            pendulum.angle = response.angle;
+        });
+    }, 50);
+</script>
+</body>
+</html>
