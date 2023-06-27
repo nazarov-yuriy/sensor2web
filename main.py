@@ -3,7 +3,7 @@ import math
 
 app = Flask(__name__)
 
-angle = 0
+t = 0
 
 
 @app.route('/')
@@ -11,11 +11,16 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/get_angle')
+@app.route('/get_state')
 def get_angle():
-    global angle
-    angle += 0.1
-    return jsonify({'angle': math.sin(angle)})
+    global t
+    t += 0.1
+    angle = math.sin(t)
+    delta_x = math.sin(0.3 * t)
+    return jsonify({
+        'angle': angle,
+        'delta_x': delta_x
+    })
 
 
 if __name__ == "__main__":
