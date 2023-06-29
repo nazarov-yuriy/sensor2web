@@ -3,6 +3,7 @@ import time
 import math
 
 url = "http://localhost:8080/set_state"
+s = requests.Session()
 
 t = 0
 while True:
@@ -14,5 +15,5 @@ while True:
         'angle': angle,
         'delta_x': delta_x
     }
-    response = requests.post(url, json=state)
+    response = s.post(url, json=state)
     print(response.status_code, state)
