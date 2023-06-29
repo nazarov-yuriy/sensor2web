@@ -2,21 +2,34 @@
 <html>
 <head>
     <title>Pendulum Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"
             integrity="sha512-3RlxD1bW34eFKPwj9gUXEWtdSMC59QqIqHnD8O/NoTwSJhgxRizdcFVQhUMFyTp5RwLTDL0Lbcqtl8b7bFAzog=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript" charset="utf-8" async>
     let pendulum;
 
     function setup() {
-        createCanvas(400, 400);
-        pendulum = new Pendulum(width / 2, 250, 200);
+        createCanvas(1000, 700);
+        pendulum = new Pendulum(width / 2, 400, 250);
+
+        var socket = io();
+        socket.on('set_state', function(msg) {
+            console.log(msg);
+            pendulum.angle = msg.angle + PI;
+            pendulum.delta_x = msg.delta_x;
+        });
+        socket.on('system', function(msg) {
+            console.log(msg);
+        });
     }
 
     function draw() {
         background(220);
+        strokeWeight(7);
+        line(50, 400, 950, 400);
         pendulum.update();
         pendulum.display();
     }
@@ -28,7 +41,7 @@
             this.pos = createVector(originX, originY);
             this.armLength = armLength;
             this.angle = 0; // initial angle
-            this.ballRadius = 20.0; // Arbitrary ball radius
+            this.ballRadius = 30.0; // Arbitrary ball radius
         }
 
         update() {
@@ -45,17 +58,10 @@
             fill(127);
             rect(this.pos.x - this.ballRadius / 2, this.pos.y - this.ballRadius / 2, this.ballRadius, this.ballRadius);
             line(this.pos.x, this.pos.y, this.pos.x + x, this.pos.y + y);
+            fill('yellow');
             ellipse(this.pos.x + x, this.pos.y + y, this.ballRadius, this.ballRadius);
         }
     }
-
-    setInterval(function () {
-        httpGet('/get_state', 'json', false, function (response) {
-            console.log(response);
-            pendulum.angle = response.angle + PI;
-            pendulum.delta_x = response.delta_x;
-        });
-    }, 50);
 </script>
 </body>
 </html>
