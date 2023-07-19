@@ -70,7 +70,7 @@
                     // console.log(dt, ratio, tail[i], tail[i+1], angle, delta_x);
                 }
             }
-            if (history && !found) {
+            if (history.length && !found) {
                 let last = history.slice(-1)[0];
                 pendulum.angle = last.angle + PI;
                 pendulum.delta_x = last.delta_x;
