@@ -7,10 +7,11 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 wandb.init(project="pendulum")
 
-allowed_keys = {'angle', 'delta_x'}
+allowed_keys = {'angle', 'delta_x', 'timestamp'}
 state = {
     'angle': 0,
-    'delta_x': 0
+    'delta_x': 0,
+    'timestamp': 0,
 }
 data = {}
 
