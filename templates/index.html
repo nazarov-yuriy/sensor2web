@@ -15,9 +15,15 @@
         createCanvas(1000, 700);
         pendulum = new Pendulum(width / 2, 400, 250);
 
+        httpGet('/get_state', 'json', false, function (response) {
+            console.log(response);
+            pendulum.angle = response.angle + PI;
+            pendulum.delta_x = response.delta_x;
+        });
+
         var socket = io();
         socket.on('set_state', function(msg) {
-            console.log(msg);
+            // console.log(getFrameRate());
             pendulum.angle = msg.angle + PI;
             pendulum.delta_x = msg.delta_x;
         });
@@ -46,7 +52,7 @@
 
         update() {
             this.pos = createVector(this.origin.x, this.origin.y)
-            this.pos.x += this.delta_x * 50
+            this.pos.x += this.delta_x
         }
 
         display() {

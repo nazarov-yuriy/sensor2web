@@ -1,14 +1,18 @@
+import wandb
+
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+wandb.init(project="pendulum")
 
 allowed_keys = {'angle', 'delta_x'}
 state = {
     'angle': 0,
     'delta_x': 0
 }
+data = {}
 
 @app.route('/')
 def index():
@@ -32,6 +36,7 @@ def set_state():
         return "Wrong data", 400
     state = data
     socketio.emit('set_state', data)
+    wandb.log(data)
     return "ok"
 
 
