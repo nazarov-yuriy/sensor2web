@@ -26,8 +26,8 @@
         socket.on('set_state', function(msg) {
             // console.log(getFrameRate());
             history.push(msg);
-            pendulum.angle = msg.angle + PI;
-            pendulum.delta_x = msg.delta_x;
+            // pendulum.angle = msg.angle + PI;
+            // pendulum.delta_x = msg.delta_x;
         });
         socket.on('system', function(msg) {
             console.log(msg);
@@ -53,6 +53,29 @@
         }
 
         update() {
+            let ts = Date.now() / 1000. - 0.500;
+            let tail = history.slice(-200);
+            let found = false;
+            for (let i = 0; i < tail.length - 1; i++) {
+                if (tail[i]['timestamp'] <= ts && ts <= tail[i+1]['timestamp']) {
+                    let dt = tail[i+1]['timestamp'] - tail[i]['timestamp'];
+                    let ratio = (ts - tail[i]['timestamp']) / dt;
+                    let d_angle = tail[i+1]['angle'] - tail[i]['angle'];
+                    let d_delta_x = tail[i+1]['delta_x'] - tail[i]['delta_x'];
+                    let angle = tail[i]['angle'] + ratio * d_angle;
+                    let delta_x = tail[i]['delta_x'] + ratio * d_delta_x;
+                    found = true;
+                    pendulum.angle = angle + PI;
+                    pendulum.delta_x = delta_x;
+                    // console.log(dt, ratio, tail[i], tail[i+1], angle, delta_x);
+                }
+            }
+            if (history && !found) {
+                let last = history.slice(-1)[0];
+                pendulum.angle = last.angle + PI;
+                pendulum.delta_x = last.delta_x;
+            }
+            
             this.pos = createVector(this.origin.x, this.origin.y)
             this.pos.x += this.delta_x
         }
