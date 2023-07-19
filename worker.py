@@ -7,7 +7,7 @@ s = requests.Session()
 
 t = 0
 while True:
-    time.sleep(0.04)
+    time.sleep(0.1)
     t += 0.1
     angle = math.sin(t)
     delta_x = math.sin(0.3 * t) * 100
