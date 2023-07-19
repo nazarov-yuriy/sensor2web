@@ -10,6 +10,7 @@
 <body>
 <script type="text/javascript" charset="utf-8" async>
     let pendulum;
+    let history = [];
 
     function setup() {
         createCanvas(1000, 700);
@@ -24,6 +25,7 @@
         var socket = io();
         socket.on('set_state', function(msg) {
             // console.log(getFrameRate());
+            history.push(msg);
             pendulum.angle = msg.angle + PI;
             pendulum.delta_x = msg.delta_x;
         });
